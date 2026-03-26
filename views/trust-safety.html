@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust & Safety | LocalLink Pro</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .safety-header {
+            background-color: var(--primary-bg);
+            padding: 80px 0;
+            border-bottom: 1px solid rgba(13, 110, 253, 0.1);
+        }
+        .v-icon {
+            width: 70px;
+            height: 70px;
+            background: white;
+            color: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .safety-feature {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .safety-feature:hover {
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm border-bottom">
+        <div class="container">
+            <a class="navbar-brand text-dark" href="/">LocalLink</a>
+            <div class="ms-auto d-flex align-items-center gap-3 guest-only">
+                <a href="/views/login.html" class="nav-link fw-semibold">Login</a>
+                <a href="/views/signup.html" class="btn btn-primary px-4">Join Now</a>
+            </div>
+            <div class="ms-auto d-flex align-items-center gap-3 auth-only d-none">
+                <a href="#" class="nav-link fw-semibold user-dash-link">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="safety-header text-center mb-5">
+        <div class="container">
+            <span class="badge bg-success-subtle text-success px-4 py-2 border border-success-subtle rounded-pill mb-4 fw-bold">Verified Shield</span>
+            <h1 class="display-3 fw-800 text-dark mb-3 animate-fade-in">Experience Built <br><span class="text-primary">on Trust</span></h1>
+            <p class="lead text-muted mx-auto animate-fade-in" style="max-width: 600px; animation-delay: 0.1s;">LocalLink is committed to providing a safe and reliable marketplace for every neighborhood connection.</p>
+        </div>
+    </section>
+
+    <!-- Main Pillars -->
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-4 animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="safety-feature h-100">
+                        <div class="v-icon"><i class="fa-solid fa-user-check"></i></div>
+                        <h3 class="fw-bold mb-3">Identity Checks</h3>
+                        <p class="text-muted">Every professional on LocalLink undergoes real-time government ID verification and a thorough background audit by our security team before being allowed to list services.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="safety-feature h-100 text-white bg-dark">
+                        <div class="v-icon bg-primary text-white"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3 class="fw-bold mb-3">Service Guarantee</h3>
+                        <p class="text-white-50">LocalLink offers a comprehensive service guarantee on every booking. If our professional doesn't meet your expectations, our dedicated resolution center will step in within 24 hours.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="safety-feature h-100 border-0 shadow-sm">
+                        <div class="v-icon"><i class="fa-solid fa-star-half-stroke text-warning"></i></div>
+                        <h3 class="fw-bold mb-3">Community Vetting</h3>
+                        <p class="text-muted">Our ratings aren't just numbers. They are verified feedback from real neighbors who have completed physical sessions with the professionals. No fake reviews, ever.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Guidelines -->
+    <section class="py-5 bg-white rounded-5 my-5 mx-2 mx-md-5 animate-fade-in" style="animation-delay: 0.5s;">
+        <div class="container py-5 px-lg-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://images.unsplash.com/photo-1541829070764-84a7d30dee62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded-4 shadow-lg" alt="Safety First">
+                </div>
+                <div class="col-lg-6 ps-lg-5">
+                    <h2 class="display-6 fw-800 mb-4">A Zero-Tolerance Policy for Neighborhood Safety</h2>
+                    <ul class="list-unstyled">
+                        <li class="mb-4 d-flex align-items-start">
+                             <div class="bg-danger-subtle text-danger rounded-circle p-2 me-3 mt-1"><i class="fa-solid fa-ban fs-5"></i></div>
+                             <div>
+                                 <h6 class="fw-bold mb-1">Zero Scam Tolerance</h6>
+                                 <p class="small text-muted mb-0">Professional profiles suspected of fraudulent activity are immediately suspended pending a high-priority investigation.</p>
+                             </div>
+                        </li>
+                        <li class="mb-4 d-flex align-items-start">
+                             <div class="bg-primary-subtle text-primary rounded-circle p-2 me-3 mt-1"><i class="fa-solid fa-lock fs-5"></i></div>
+                             <div>
+                                 <h6 class="fw-bold mb-1">Data Sovereignty</h6>
+                                 <p class="small text-muted mb-0">We never sell your sensitive personal or location data. Your neighborhood connections remain private and secure between you and the professional.</p>
+                             </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="container py-5 text-center">
+        <h2 class="fw-bold mb-4">Still have security questions?</h2>
+        <a href="/views/help-center.html" class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow">Visit Our Trust Hub</a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+             <p class="text-white-50 mb-0 opacity-50">&copy; 2024 LocalLink Professional Market Monitoring.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             updateAuthUI();
+        });
+    </script>
+</body>
+</html>

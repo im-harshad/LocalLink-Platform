@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Control Center | LocalLink Pro</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">LocalLink <span class="badge bg-primary ms-2 fs-6 fw-normal">PRO</span></a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Control Center</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/views/index.html">Live Site</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fa-regular fa-star me-1 text-warning"></i> <span id="user-name-display">Professional</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item" href="/"><i class="fa-solid fa-house me-2"></i>Home</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row g-4 mb-4">
+            <!-- Sidebar / Professional Profile -->
+            <div class="col-lg-3">
+                <div class="card border-0 shadow-sm p-4 mb-4 animate-fade-in text-center">
+                    <div class="stat-value mx-auto bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <h5 class="fw-bold mb-1" id="provider-name-display">Professional Profile</h5>
+                    <div class="badge bg-success-subtle text-success rounded-pill mb-3">Verified Partner</div>
+                    <hr>
+                    <div class="text-start mb-3">
+                        <small class="text-muted d-block text-uppercase fw-bold letter-spacing-1 mb-1" style="font-size: 0.65rem;">Primary Location</small>
+                        <p class="fw-semibold mb-0 small" id="provider-location-display">Loading...</p>
+                    </div>
+                    <div class="text-start mb-4">
+                        <small class="text-muted d-block text-uppercase fw-bold letter-spacing-1 mb-1" style="font-size: 0.65rem;">Service Category</small>
+                        <p class="fw-semibold mb-0 small" id="provider-category-display">Loading...</p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                            <i class="fa-solid fa-plus me-2"></i> Add Service
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="fa-solid fa-pen-to-square me-2"></i> Edit Account
+                        </button>
+                        <a href="/views/availability.html" class="btn btn-outline-info btn-sm">
+                            <i class="fa-regular fa-calendar-check me-2"></i> Manage Availability
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-lg p-4 bg-primary text-white animate-fade-in" style="animation-delay: 0.1s;">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="mb-0 text-white-50">Today's Traffic</h6>
+                        <i class="fa-solid fa-chart-line text-white-50"></i>
+                    </div>
+                    <div class="display-5 fw-bold mb-1" id="total-tokens">0</div>
+                    <p class="small text-white-50 mb-0">Issued Tokens (Live)</p>
+                </div>
+            </div>
+
+            <!-- Main Control Area -->
+            <div class="col-lg-9">
+                <!-- Virtual Queue Monitor -->
+                <div class="card border-0 shadow-sm p-4 mb-5 animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">Live Queue Monitor</h4>
+                        <div class="d-flex align-items-center gap-2">
+                             <div class="spinner-grow text-danger spinner-grow-sm" role="status"></div>
+                             <span class="small fw-bold text-danger">LIVE</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="bg-light">
+                                <tr class="small text-muted text-uppercase">
+                                    <th>Token</th>
+                                    <th>Client Name</th>
+                                    <th>Current Status</th>
+                                    <th>Issued</th>
+                                    <th class="text-end">Command</th>
+                                </tr>
+                            </thead>
+                            <tbody id="queue-table-body" class="small">
+                                <tr><td colspan="5" class="text-center py-5">
+                                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                                    Syncing queue...
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Professional Bookings -->
+                <div class="card border-0 shadow-sm p-4 animate-fade-in" style="animation-delay: 0.3s;">
+                    <h4 class="fw-bold mb-4">Upcoming Professional Services</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="bg-light">
+                                <tr class="small text-muted text-uppercase">
+                                    <th>Service Type</th>
+                                    <th>Customer</th>
+                                    <th>Schedule</th>
+                                    <th>Revenue</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Manage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body" class="small">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="addServiceModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-800">New Service Offering</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="add-service-form" class="needs-validation">
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label fw-bold small">Category</label>
+                            <select id="category_id" class="form-select" required>
+                                <!-- Categories loaded via JS -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="service_name" class="form-label fw-bold small">Service Name</label>
+                            <input type="text" id="service_name" class="form-control" placeholder="e.g., Deep Kitchen Cleaning" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="service_desc" class="form-label fw-bold small">Detailed Description</label>
+                            <textarea id="service_desc" class="form-control" rows="3" placeholder="Tell customers exactly what's included..."></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="service_price" class="form-label fw-bold small">Standard Rate (₹)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" id="service_price" class="form-control" placeholder="0.00" required step="0.01">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" id="add-service-btn">Broadcast Service</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-800">Account Configuration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="edit-profile-form">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Business Headline</label>
+                            <input type="text" id="edit_service_type" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Operational City</label>
+                            <input type="text" id="edit_location" class="form-control" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small">About Your Expertise</label>
+                            <textarea id="edit_description" class="form-control" rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" id="edit-profile-btn">Global Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/queue.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            const user = JSON.parse(sessionStorage.getItem('user'));
+            if (!user || user.role !== 'provider') {
+                window.location.replace('/');
+                return;
+            }
+            
+            // UI Initialization
+            const userNameEl = document.getElementById('user-name-display');
+            if (userNameEl) userNameEl.textContent = user.name;
+            
+            loadProfileDetails();
+            loadProviderQueue();
+            loadProviderBookings();
+            loadDashboardCategories();
+        });
+
+        async function loadProfileDetails() {
+            const user = JSON.parse(sessionStorage.getItem('user'));
+            const providerId = user.provider_id || user.id;
+            try {
+                const res = await fetch(`/api/services/provider-info/${providerId}`);
+                const data = await res.json();
+                
+                if (data.id || data.success) {
+                    const info = data.success ? data.data : data;
+                    document.getElementById('provider-name-display').textContent = info.name || user.name;
+                    document.getElementById('provider-location-display').textContent = info.location || 'Not set';
+                    document.getElementById('provider-category-display').textContent = info.service_type || 'General';
+                    
+                    document.getElementById('edit_service_type').value = info.service_type || '';
+                    document.getElementById('edit_location').value = info.location || '';
+                    document.getElementById('edit_description').value = info.description || '';
+                }
+            } catch (err) {
+                console.error('Profile reload failed', err);
+            }
+        }
+
+        async function loadDashboardCategories() {
+            try {
+                const res = await fetch('/api/services/categories');
+                const categories = await res.json();
+                const select = document.getElementById('category_id');
+                select.innerHTML = '<option value="" disabled selected>Select category...</option>' + 
+                    categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            } catch (err) {}
+        }
+
+        async function loadProviderQueue() {
+            const token = sessionStorage.getItem('token');
+            try {
+                const res = await fetch('/api/queue/provider-view', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const queue = await res.json();
+                renderQueueTable(queue);
+            } catch (err) {
+                console.error('Queue sync error', err);
+            }
+        }
+
+        function renderQueueTable(queue) {
+            const tbody = document.getElementById('queue-table-body');
+            document.getElementById('total-tokens').textContent = queue.length;
+
+            if (!Array.isArray(queue) || queue.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-muted">No active tokens in your virtual queue today.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = queue.map(t => `
+                <tr class="${t.status === 'serving' ? 'table-primary' : ''}">
+                    <td class="fw-bold text-primary">Token #${t.token_number}</td>
+                    <td><div class="fw-bold">${t.customer_name}</div></td>
+                    <td><span class="badge ${getStatusBadge(t.status)} px-3 py-2 rounded-pill">${t.status.toUpperCase()}</span></td>
+                    <td class="text-muted small">${new Date(t.issued_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td class="text-end">
+                        <div class="btn-group btn-group-sm rounded-pill overflow-hidden shadow-sm">
+                            ${t.status !== 'completed' ? `
+                                <button class="btn btn-primary px-3" onclick="updateTokenStatus(${t.id}, 'serving')">Serve</button>
+                                <button class="btn btn-success px-3" onclick="updateTokenStatus(${t.id}, 'completed')">Done</button>
+                            ` : '<span class="text-success p-2"><i class="fa-solid fa-circle-check"></i> Complete</span>'}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadProviderBookings() {
+            const token = sessionStorage.getItem('token');
+            const user = JSON.parse(sessionStorage.getItem('user'));
+            try {
+                const res = await fetch(`/api/bookings/provider/${user.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const bookings = await res.json();
+                const tbody = document.getElementById('bookings-table-body');
+                
+                if (!Array.isArray(bookings) || bookings.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-muted">No upcoming appointments found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = bookings.map(b => `
+                    <tr>
+                        <td class="fw-bold text-dark">${b.service_name}</td>
+                        <td>${b.customer_name}</td>
+                        <td class="text-muted">${new Date(b.booking_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</td>
+                        <td class="fw-semibold">₹${b.price}</td>
+                        <td><span class="badge ${getStatusBadge(b.status)} px-2 py-1 rounded-pill">${b.status.toUpperCase()}</span></td>
+                        <td class="text-end">
+                            ${b.status !== 'completed' ? `
+                                <button class="btn btn-sm btn-outline-primary" onclick="updateBookingStatus(${b.id}, 'completed')">Set Done</button>
+                            ` : '<i class="fa-solid fa-check text-success"></i>'}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {}
+        }
+
+        async function updateTokenStatus(tokenId, status) {
+            const token = sessionStorage.getItem('token');
+            try {
+                const res = await fetch('/api/queue/status', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ tokenId, status })
+                });
+                if (res.ok) loadProviderQueue();
+            } catch (err) {}
+        }
+
+        async function updateBookingStatus(bookingId, status) {
+            const token = sessionStorage.getItem('token');
+            try {
+                const res = await fetch('/api/bookings/status', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ id: bookingId, status })
+                });
+                if (res.ok) loadProviderBookings();
+            } catch (err) {}
+        }
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'waiting': return 'bg-warning text-dark';
+                case 'serving': return 'bg-primary text-white';
+                case 'completed': return 'bg-success text-white';
+                case 'pending': return 'bg-warning text-dark';
+                case 'confirmed': return 'bg-info text-white';
+                default: return 'bg-secondary';
+            }
+        }
+
+        document.getElementById('add-service-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('add-service-btn');
+            btn.disabled = true;
+            
+            const token = sessionStorage.getItem('token');
+            const data = {
+                category_id: document.getElementById('category_id').value,
+                name: document.getElementById('service_name').value,
+                description: document.getElementById('service_desc').value,
+                price: document.getElementById('service_price').value
+            };
+
+            try {
+                const res = await fetch('/api/services', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    Swal.fire('Success', 'Service launched successfully!', 'success').then(() => location.reload());
+                } else {
+                    const err = await res.json();
+                    Swal.fire('Error', err.message || 'Validation failed', 'error');
+                }
+            } catch (err) {
+                Swal.fire('Error', 'Network connection failed', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('edit-profile-btn');
+            btn.disabled = true;
+            
+            const token = sessionStorage.getItem('token');
+            const data = {
+                service_type: document.getElementById('edit_service_type').value,
+                location: document.getElementById('edit_location').value,
+                description: document.getElementById('edit_description').value
+            };
+
+            try {
+                const res = await fetch('/api/services/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    Swal.fire('Updated', 'Profile broadcast updated.', 'success').then(() => location.reload());
+                }
+            } catch (err) {} finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+

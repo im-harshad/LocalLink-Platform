@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | LocalLink Pro</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Chart.js for loyalty stats -->
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .tier-badge-bronze {
+            background: linear-gradient(135deg, #cd7f32, #a0522d);
+        }
+
+        .tier-badge-silver {
+            background: linear-gradient(135deg, #c0c0c0, #808080);
+        }
+
+        .tier-badge-gold {
+            background: linear-gradient(135deg, #ffd700, #b8860b);
+        }
+
+        .tier-badge-platinum {
+            background: linear-gradient(135deg, #e5e4e2, #a0a0a0);
+        }
+
+        .loyalty-card {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            border-radius: 18px;
+            color: white;
+        }
+
+        .points-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .points-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #34d399, #10b981);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .pay-now-btn {
+            font-size: 0.75rem;
+            padding: 3px 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">LocalLink</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/views/search.html">Find Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/views/categories.html">Categories</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fa-regular fa-user me-1"></i> <span id="user-name-display">Account</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item" href="/"><i class="fa-solid fa-house me-2"></i>Home</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i
+                                        class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <!-- Profile Sidebar -->
+            <div class="col-lg-3">
+                <div class="card border-0 shadow-sm p-4 text-center animate-fade-in">
+                    <div class="mx-auto mb-3" style="width: 80px; height: 80px;">
+                        <div class="stat-value rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center h-100"
+                            id="user-initials" style="font-size: 2rem;">U</div>
+                    </div>
+                    <h5 id="dash-user-name" class="fw-bold mb-1">User Name</h5>
+                    <p id="dash-user-email" class="text-muted small">user@example.com</p>
+                    <div class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-3">Customer Account</div>
+                    <hr>
+                    <div class="d-grid gap-2">
+                        <a href="/views/search.html" class="btn btn-primary">
+                            <i class="fa-solid fa-plus me-2"></i> New Booking
+                        </a>
+                    </div>
+                </div><br>
+
+                <!-- Loyalty Points Widget -->
+                <div class="loyalty-card p-4 animate-fade-in" style="animation-delay:0.15s;">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="mb-0 text-white-50 small fw-bold"
+                                style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;">Loyalty Points</p>
+                            <div class="display-6 fw-bold" id="loyalty-total-points">--</div>
+                        </div>
+                        <span class="badge text-white px-3 py-2 rounded-pill fw-bold" id="loyalty-tier-badge"
+                            style="font-size:0.7rem;">BRONZE</span>
+                    </div>
+                    <div class="points-bar mb-2">
+                        <div class="points-bar-fill" id="loyalty-progress-bar" style="width:0%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-white-50" style="font-size:0.72rem;">
+                        <span>Tier Progress</span>
+                        <span id="loyalty-next-tier">→ Silver</span>
+                    </div>
+                    <hr style="border-color:rgba(255,255,255,0.15);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-white-50 small">10 pts = ₹1 discount</span>
+                        <button class="btn btn-sm btn-light text-primary fw-bold" onclick="showRedeemModal()"
+                            style="font-size:0.75rem;">
+                            Redeem <i class="fa-solid fa-gift ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Queue Area -->
+                <div class="card border-0 shadow-sm p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">Active Virtual Queue</h4>
+                        <div class="spinner-grow text-success spinner-grow-sm" role="status"></div>
+                    </div>
+
+                    <div id="active-queue-card" class="d-none">
+                        <div class="row align-items-center g-4 text-center">
+                            <div class="col-md-4">
+                                <p class="text-muted small mb-1">Your Token</p>
+                                <div class="stat-value text-primary" id="user-token-num"># --</div>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-muted small mb-1">Current Position</p>
+                                <div class="h2 fw-bold" id="user-position">--</div>
+                                <span class="badge bg-info-subtle text-info fw-medium" id="wait-time">~ 15 mins
+                                    wait</span>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-muted small mb-1">Provider Service</p>
+                                <h6 id="active-provider-name" class="fw-bold mb-0">N/A</h6>
+                                <p class="small text-muted" id="active-service-type">N/A</p>
+                                <div class="badge bg-success" id="token-status">IN PROGRESS</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="no-active-queue" class="text-center py-5">
+                        <div class="mb-3 text-muted opacity-25">
+                            <i class="fa-solid fa-ticket-simple fa-3x"></i>
+                        </div>
+                        <h5 class="text-muted">No active tokens found</h5>
+                        <p class="small text-muted mb-4">Book a service to get your spot in the virtual line.</p>
+                        <a href="/views/search.html" class="btn btn-outline-primary btn-sm px-4">Browse Services</a>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="card border-0 shadow-sm p-4 animate-fade-in" style="animation-delay: 0.2s;">
+                    <h4 class="fw-bold mb-4">Recent Professional Bookings</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="bg-light">
+                                <tr class="small text-muted">
+                                    <th>SERVICE TYPE</th>
+                                    <th>PROFESSIONAL</th>
+                                    <th>DATE & TIME</th>
+                                    <th>TOTAL</th>
+                                    <th>STATUS</th>
+                                    <th>PAYMENT</th>
+                                    <th class="text-end">MANAGE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body" class="small">
+                                <!-- Dynamic -->
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">Loading your history...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/queue.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+
+            const user = JSON.parse(sessionStorage.getItem('user'));
+            if (user) {
+                document.getElementById('dash-user-name').textContent = user.name;
+                document.getElementById('dash-user-email').textContent = user.email;
+                document.getElementById('user-initials').textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+                loadUserBookings(user.id);
+                loadLoyaltyData();
+                if (typeof loadUserQueueInfo === 'function') loadUserQueueInfo();
+            }
+        });
+
+        async function loadLoyaltyData() {
+            const token = sessionStorage.getItem('token');
+            try {
+                const res = await fetch('/api/loyalty/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (!data.success) return;
+                const lp = data.loyalty;
+                document.getElementById('loyalty-total-points').textContent = lp.total_points.toLocaleString();
+                document.getElementById('loyalty-tier-badge').textContent = lp.tier.toUpperCase();
+                document.getElementById('loyalty-tier-badge').className = `badge text-white px-3 py-2 rounded-pill fw-bold tier-badge-${lp.tier}`;
+                document.getElementById('loyalty-progress-bar').style.width = `${lp.tier_progress}%`;
+                if (lp.next_tier) {
+                    document.getElementById('loyalty-next-tier').textContent = `→ ${lp.next_tier.charAt(0).toUpperCase() + lp.next_tier.slice(1)} (${lp.points_to_next} pts left)`;
+                } else {
+                    document.getElementById('loyalty-next-tier').textContent = '🏆 Max Tier!';
+                }
+            } catch (err) { console.error('Loyalty error', err); }
+        }
+
+        async function showRedeemModal() {
+            const token = sessionStorage.getItem('token');
+            const res = await fetch('/api/loyalty/me', { headers: { 'Authorization': `Bearer ${token}` } });
+            const data = await res.json();
+            const pts = data.loyalty?.total_points || 0;
+            if (pts < 100) return Swal.fire('Not Enough Points', 'You need at least 100 points to redeem.', 'info');
+
+            const { value: pointsToRedeem } = await Swal.fire({
+                title: '🎁 Redeem Loyalty Points',
+                html: `<p class="text-muted small">You have <strong>${pts}</strong> points available.<br>100 pts = ₹10 discount on next booking.</p>
+                       <input id="swal-points" class="swal2-input" type="number" min="100" max="${pts}" step="100" value="100" placeholder="Points to redeem">`,
+                confirmButtonText: 'Redeem Now',
+                confirmButtonColor: '#2563eb',
+                preConfirm: () => {
+                    const val = parseInt(document.getElementById('swal-points').value);
+                    if (!val || val < 100) { Swal.showValidationMessage('Minimum 100 points'); return false; }
+                    if (val > pts) { Swal.showValidationMessage('Not enough points'); return false; }
+                    return Math.floor(val / 100) * 100;
+                }
+            });
+
+            if (!pointsToRedeem) return;
+
+            try {
+                const redeemRes = await fetch('/api/loyalty/redeem', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ points: pointsToRedeem })
+                });
+                const redeemData = await redeemRes.json();
+                if (redeemData.success) {
+                    Swal.fire('Success! 🎉', redeemData.message, 'success');
+                    loadLoyaltyData();
+                } else {
+                    Swal.fire('Error', redeemData.message, 'error');
+                }
+            } catch (e) { Swal.fire('Error', 'Network error', 'error'); }
+        }
+
+        async function loadUserBookings(userId) {
+            const token = sessionStorage.getItem('token');
+            try {
+                const res = await fetch(`/api/bookings/my-bookings`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const bookings = await res.json();
+                const tbody = document.getElementById('bookings-table-body');
+
+                if (!Array.isArray(bookings) || bookings.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No booking history yet. Start your first discovery!</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = bookings.map(b => `
+                    <tr>
+                        <td class="fw-bold text-dark">${b.service_name}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-light p-2 me-2"><i class="fa-solid fa-user-tie text-muted"></i></div>
+                                <span>${b.provider_name}</span>
+                            </div>
+                        </td>
+                        <td class="text-muted">${new Date(b.booking_date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</td>
+                        <td class="fw-semibold">₹${b.price}</td>
+                        <td><span class="badge ${getStatusBadge(b.status)} px-3 py-2 rounded-pill">${b.status.toUpperCase()}</span></td>
+                        <td>
+                            ${b.payment_status === 'unpaid' && b.status !== 'cancelled' ? `
+                                <a class="btn btn-sm btn-warning pay-now-btn fw-bold" 
+                                   href="/views/payment.html?booking_id=${b.id}&price=${b.price}&service=${encodeURIComponent(b.service_name)}&provider=${encodeURIComponent(b.provider_name)}&date=${encodeURIComponent(b.booking_date)}">
+                                   <i class="fa-solid fa-credit-card me-1"></i>Pay Now
+                                </a>` : ''}
+                            ${b.payment_status === 'paid' ? '<span class="badge bg-success-subtle text-success rounded-pill px-2"><i class="fa-solid fa-check me-1"></i>Paid</span>' : ''}
+                            ${b.payment_status === 'unpaid' && b.status === 'cancelled' ? '<span class="text-muted small">N/A</span>' : ''}
+                        </td>
+                        <td class="text-end">
+                            ${b.status !== 'completed' && b.status !== 'cancelled' ? `
+                                <button class="btn btn-sm btn-outline-danger" onclick="cancelBooking(${b.id})">Cancel</button>
+                            ` : ''}
+                            ${b.status === 'completed' ? `
+                                <a href="/views/provider-profile.html?id=${b.provider_id}#reviews-list" class="btn btn-sm btn-outline-primary">Review</a>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error fetching bookings:', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'Failed to sync your booking history.'
+                });
+            }
+        }
+
+        async function cancelBooking(id) {
+            const { isConfirmed } = await Swal.fire({
+                title: 'Cancel Professional Booking?',
+                text: "This action cannot be undone. Your queue position will be lost.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, cancel it'
+            });
+
+            if (!isConfirmed) return;
+
+            const token = sessionStorage.getItem('token');
+            try {
+                const res = await fetch('/api/bookings/status', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ id, status: 'cancelled' })
+                });
+
+                if (res.ok) {
+                    Swal.fire('Cancelled', 'Booking removed successfully.', 'success');
+                    location.reload();
+                } else {
+                    Swal.fire('Failed', 'Could not process cancellation.', 'error');
+                }
+            } catch (err) {
+                console.error('Cancel booking error', err);
+            }
+        }
+
+        function getStatusBadge(status) {
+            switch (status) {
+                case 'pending': return 'bg-warning text-dark';
+                case 'confirmed': return 'bg-info text-white';
+                case 'completed': return 'bg-success text-white';
+                case 'cancelled': return 'bg-danger text-white';
+                default: return 'bg-secondary';
+            }
+        }
+    </script>
+</body>
+
+</html>

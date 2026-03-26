@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Profile | LocalLink Pro</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Style CSS -->
+    <!-- Availability Calendar Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">LocalLink</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/views/search.html">Explore</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/views/categories.html">Categories</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-3 guest-only">
+                    <a href="/views/login.html" class="nav-link fw-semibold">Login</a>
+                    <a href="/views/signup.html" class="btn btn-primary px-4">Join Hub</a>
+                </div>
+                <div class="d-flex align-items-center gap-3 auth-only d-none">
+                    <a href="#" class="nav-link fw-semibold user-dash-link">My Dashboard</a>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fa-regular fa-user me-1"></i> <span id="user-name-display">Account</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item user-dash-link" href="#"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Header -->
+    <header class="bg-white border-bottom py-5 mb-5 animate-fade-in">
+        <div class="container">
+            <div class="row align-items-center text-center text-md-start">
+                <div class="col-md-auto mb-4 mb-md-0">
+                    <div class="mx-auto rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center shadow-sm" style="width: 120px; height: 120px; font-size: 3rem;">
+                        <span id="provider-initials" class="fw-bold">P</span>
+                    </div>
+                </div>
+                <div class="col-md ps-md-4">
+                    <div class="badge bg-success-subtle text-success px-3 py-2 rounded-pill mb-3 fw-bold small">
+                        <i class="fa-solid fa-circle-check me-2"></i> Verified Specialist
+                    </div>
+                    <h1 class="display-4 fw-800 text-dark mb-1" id="provider-name">Professional Name</h1>
+                    <p class="lead fw-600 text-primary mb-2" id="provider-service-type">Expert Services</p>
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start text-muted">
+                        <i class="fa-solid fa-location-dot me-2"></i>
+                        <span id="provider-location">Local Area</span>
+                        <span class="mx-3 opacity-25">|</span>
+                        <div class="d-flex gap-1 text-warning" id="rating-stars">
+                             <!-- Dynamic Stars -->
+                        </div>
+                        <span class="ms-2 small fw-bold" id="rating-summary-text">No ratings</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-2">
+        <div class="row g-5 align-items-start">
+            <!-- Left Info -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
+                    <h4 class="fw-bold mb-4">Professional Expertise</h4>
+                    <p id="provider-desc" class="text-muted lh-lg"></p>
+                </div>
+
+                <div class="card border-0 shadow-sm p-4 animate-fade-in" style="animation-delay: 0.2s;">
+                    <h4 class="fw-bold mb-4">Service Menu</h4>
+                    <div id="services-list" class="row g-3">
+                        <!-- Dynamic -->
+                        <div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div class="card border-0 shadow-sm p-4 mt-4 animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">Client Reviews</h4>
+                        <div class="text-end">
+                            <div class="h3 fw-bold mb-0 text-primary" id="avg-rating-display">0.0</div>
+                            <div class="small text-muted" id="total-reviews-display">No reviews yet</div>
+                        </div>
+                    </div>
+
+                    <!-- Review Form (Hidden by default, shown if user can review) -->
+                    <div id="review-form-container" class="mb-5 d-none">
+                        <div class="glass p-4 rounded-4 border-0">
+                            <h5 class="fw-bold mb-3">Share Your Experience</h5>
+                            <form id="submit-review-form">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Your Rating</label>
+                                    <div class="rating-input d-flex gap-2 mb-3">
+                                        <input type="radio" name="rating" value="5" id="r5" class="btn-check" checked>
+                                        <label for="r5" class="btn btn-outline-warning btn-sm border-0 bg-light rounded-pill px-3">5 <i class="fa-solid fa-star"></i></label>
+                                        <input type="radio" name="rating" value="4" id="r4" class="btn-check">
+                                        <label for="r4" class="btn btn-outline-warning btn-sm border-0 bg-light rounded-pill px-3">4 <i class="fa-solid fa-star"></i></label>
+                                        <input type="radio" name="rating" value="3" id="r3" class="btn-check">
+                                        <label for="r3" class="btn btn-outline-warning btn-sm border-0 bg-light rounded-pill px-3">3 <i class="fa-solid fa-star"></i></label>
+                                        <input type="radio" name="rating" value="2" id="r2" class="btn-check">
+                                        <label for="r2" class="btn btn-outline-warning btn-sm border-0 bg-light rounded-pill px-3">2 <i class="fa-solid fa-star"></i></label>
+                                        <input type="radio" name="rating" value="1" id="r1" class="btn-check">
+                                        <label for="r1" class="btn btn-outline-warning btn-sm border-0 bg-light rounded-pill px-3">1 <i class="fa-solid fa-star"></i></label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <textarea id="review-comment" class="form-control border-0 bg-light rounded-4" rows="3" placeholder="Tell others about the professional quality of service..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill fw-bold" id="submit-review-btn">
+                                    Post Review <i class="fa-solid fa-paper-plane ms-2 small"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="reviews-list">
+                        <!-- Dynamic Reviews -->
+                        <div class="text-center py-4 text-muted small">Loading feedback...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="col-lg-4">
+
+                <!-- Book a Slot — sticky so it stays visible while scrolling -->
+                <div style="position: sticky; top: 80px; z-index: 10;">
+                    <div class="card border-0 shadow-lg p-4 mb-4 animate-fade-in" style="animation-delay: 0.3s;">
+                        <h4 class="fw-bold mb-1">Book a Slot</h4>
+                        <p class="small text-muted mb-3">Pick an available time slot below</p>
+                        <form id="booking-form">
+                            <input type="hidden" id="selected-service-id">
+                            <input type="hidden" id="booking-date">
+
+                            <!-- Date Selector -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">Select Date</label>
+                                <div class="d-flex gap-2 overflow-auto pb-1" id="date-selector" style="-webkit-overflow-scrolling:touch; scrollbar-width:none;">
+                                    <div class="text-muted small py-2"><div class="spinner-border spinner-border-sm text-primary" role="status"></div> Loading...</div>
+                                </div>
+                            </div>
+
+                            <!-- Time Slot Selector -->
+                            <div class="mb-3" id="time-slot-wrapper" style="display:none;">
+                                <label class="form-label fw-bold small">Available Time Slots</label>
+                                <div class="row g-2" id="time-slot-grid"></div>
+                            </div>
+
+                            <div class="glass p-3 rounded-3 mb-3 d-none" id="booking-slot-summary">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-regular fa-calendar-check text-primary"></i>
+                                    <span class="small fw-bold" id="selected-slot-display">No slot selected</span>
+                                </div>
+                            </div>
+
+                            <div class="glass p-3 rounded-3 mb-4 d-none" id="service-summary">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small fw-bold text-muted" id="selected-service-name">Service</span>
+                                    <span class="fw-bold text-primary" id="selected-service-price">₹0</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow" id="book-btn" disabled>
+                                Generate Token &amp; Book <i class="fa-solid fa-arrow-right ms-2"></i>
+                            </button>
+                        </form>
+                        <hr class="my-4 opacity-5">
+                        <div class="text-center small text-muted">
+                            <i class="fa-solid fa-ticket-simple me-2"></i> Instant virtual queue token on booking.
+                        </div>
+                    </div>
+                </div><!-- /sticky wrapper -->
+
+                <!-- Live Queue — NOT sticky, flows naturally below -->
+                <div class="card border-0 shadow-sm p-4 bg-primary text-white animate-fade-in mt-3" style="animation-delay: 0.4s;">
+                    <h6 class="text-white-50 small text-uppercase fw-bold letter-spacing-1 mb-3">Today's Live Queue</h6>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="display-5 fw-bold" id="current-serving-token"># --</div>
+                            <p class="small text-white-50 mb-0">Currently Serving</p>
+                        </div>
+                        <div class="text-end">
+                            <div class="h4 fw-bold mb-0" id="people-waiting">0</div>
+                            <p class="small text-white-50 mb-0">In Line</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /col-lg-4 -->
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/booking.js"></script>
+    <script>
+    /* ─── Availability Calendar ─────────────────────────────────────── */
+    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    let availabilityData = [];
+    let selectedDate = null;
+
+    async function loadAvailabilityCalendar(providerId) {
+        try {
+            const res = await fetch(`/api/availability/${providerId}`);
+            const data = await res.json();
+            availabilityData = data.slots || [];
+            renderDateSelector();
+        } catch (e) {
+            console.error('Availability load error', e);
+            document.getElementById('date-selector').innerHTML = '<p class="small text-muted">Could not load slots.</p>';
+        }
+    }
+
+    function renderDateSelector() {
+        const container = document.getElementById('date-selector');
+        // Get unique dates
+        const uniqueDates = [...new Set(availabilityData.map(s => s.date.substring(0,10)))];
+        if (uniqueDates.length === 0) {
+            container.innerHTML = '<p class="small text-muted">No available slots at the moment.</p>';
+            return;
+        }
+        container.innerHTML = uniqueDates.map(d => {
+            const dateObj = new Date(d + 'T00:00:00');
+            return `
+                <button type="button" class="date-chip btn flex-shrink-0"
+                        onclick="selectDate('${d}', this)"
+                        data-date="${d}"
+                        style="border-radius:12px;border:2px solid #e2e8f0;min-width:60px;padding:8px 10px;background:white;transition:all 0.2s;text-align:center;">
+                    <div class="date-chip-day" style="font-size:0.7rem;color:#64748b;font-weight:600;">${DAYS[dateObj.getDay()]}</div>
+                    <div class="date-chip-num" style="font-size:1.1rem;font-weight:800;color:#1e293b;">${dateObj.getDate()}</div>
+                    <div class="date-chip-mon" style="font-size:0.65rem;color:#94a3b8;">${MONTHS[dateObj.getMonth()]}</div>
+                </button>`;
+        }).join('');
+    }
+
+    // FIX: Accept 'el' parameter instead of using event.currentTarget
+    function selectDate(date, el) {
+        selectedDate = date;
+
+        // Reset all chips
+        document.querySelectorAll('.date-chip').forEach(btn => {
+            btn.style.background = 'white';
+            btn.style.borderColor = '#e2e8f0';
+            btn.querySelector('.date-chip-day').style.color = '#64748b';
+            btn.querySelector('.date-chip-num').style.color = '#1e293b';
+            btn.querySelector('.date-chip-mon').style.color = '#94a3b8';
+        });
+
+        // Highlight selected chip
+        el.style.background = 'var(--primary, #2563eb)';
+        el.style.borderColor = 'var(--primary, #2563eb)';
+        el.querySelector('.date-chip-day').style.color = 'rgba(255,255,255,0.8)';
+        el.querySelector('.date-chip-num').style.color = 'white';
+        el.querySelector('.date-chip-mon').style.color = 'rgba(255,255,255,0.7)';
+
+        // Reset time slot selection
+        document.getElementById('booking-date').value = '';
+        document.getElementById('booking-slot-summary').classList.add('d-none');
+        document.getElementById('book-btn').disabled = true;
+
+        renderTimeSlots(date);
+    }
+
+    function renderTimeSlots(date) {
+        const wrapper = document.getElementById('time-slot-wrapper');
+        const grid = document.getElementById('time-slot-grid');
+        wrapper.style.display = 'block';
+
+        const daySlots = availabilityData.filter(s => s.date.substring(0,10) === date && s.is_available);
+        if (daySlots.length === 0) {
+            grid.innerHTML = '<div class="col-12 text-muted small">No available slots on this date.</div>';
+            return;
+        }
+        grid.innerHTML = daySlots.map(slot => {
+            const start = slot.start_time.substring(0, 5);
+            const end = slot.end_time.substring(0, 5);
+            const dateTime = `${date}T${slot.start_time.substring(0,5)}`;
+            return `
+                <div class="col-6">
+                    <button type="button" class="btn w-100 time-slot-btn"
+                            onclick="selectTimeSlot('${dateTime}', '${start}', '${end}', this)"
+                            style="border:2px solid #e2e8f0;border-radius:10px;font-size:0.82rem;font-weight:600;padding:10px 4px;transition:all 0.2s;background:white;">
+                        <i class="fa-regular fa-clock me-1 text-muted"></i>${start} - ${end}
+                    </button>
+                </div>`;
+        }).join('');
+    }
+
+    function selectTimeSlot(dateTimeValue, start, end, btn) {
+        document.querySelectorAll('.time-slot-btn').forEach(b => {
+            b.style.borderColor = '#e2e8f0';
+            b.style.background = 'white';
+            b.style.color = '#1e293b';
+        });
+        btn.style.borderColor = 'var(--primary)';
+        btn.style.background = 'var(--primary)';
+        btn.style.color = 'white';
+
+        document.getElementById('booking-date').value = dateTimeValue;
+
+        const dateObj = new Date(selectedDate + 'T00:00:00');
+        const display = `${DAYS[dateObj.getDay()]}, ${dateObj.getDate()} ${MONTHS[dateObj.getMonth()]} • ${start} – ${end}`;
+        document.getElementById('selected-slot-display').textContent = display;
+        document.getElementById('booking-slot-summary').classList.remove('d-none');
+
+        // Enable book button if service also selected
+        const hasService = document.getElementById('selected-service-id').value;
+        if (hasService) document.getElementById('book-btn').disabled = false;
+    }
+
+    // Patch loadProviderDetails to also load availability
+    const _originalLoad = window.loadProviderDetails;
+    window.loadProviderDetails = async function(providerId) {
+        if (_originalLoad) await _originalLoad(providerId);
+        loadAvailabilityCalendar(providerId);
+    };
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             updateAuthUI();
+             const providerId = new URLSearchParams(window.location.search).get('id');
+             if (providerId) {
+                 if (typeof loadProviderDetails === 'function') loadProviderDetails(providerId);
+             }
+        });
+    </script>
+</body>
+</html>

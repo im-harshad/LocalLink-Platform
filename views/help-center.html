@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center | LocalLink Support</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .help-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+            padding: 100px 0;
+            color: white;
+            border-radius: 0 0 50px 50px;
+        }
+        .search-container {
+            max-width: 600px;
+            margin: -40px auto 0;
+            position: relative;
+            z-index: 10;
+        }
+        .help-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 20px;
+        }
+        .help-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08) !important;
+            border-color: var(--primary);
+        }
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-bg);
+            color: var(--primary);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand text-dark" href="/">LocalLink</a>
+            <div class="ms-auto d-flex align-items-center gap-3 guest-only">
+                <a href="/views/login.html" class="nav-link fw-semibold">Login</a>
+                <a href="/views/signup.html" class="btn btn-primary px-4">Join Now</a>
+            </div>
+            <div class="ms-auto d-flex align-items-center gap-3 auth-only d-none">
+                <a href="#" class="nav-link fw-semibold user-dash-link">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Help Hero -->
+    <section class="help-hero text-center mb-5">
+        <div class="container">
+            <h1 class="display-4 fw-800 mb-3 animate-fade-in">How can we help?</h1>
+            <p class="lead opacity-75 mb-0 animate-fade-in" style="animation-delay: 0.1s;">Search our knowledge base or browse categories below</p>
+        </div>
+    </section>
+
+    <!-- Search Bar -->
+    <div class="container search-container animate-fade-in" style="animation-delay: 0.2s;">
+        <div class="glass p-2 shadow-lg rounded-pill border-0">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-0 ps-4"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                <input type="text" class="form-control border-0 bg-transparent py-3" placeholder="Describe your issue (e.g. 'How to book')">
+                <button class="btn btn-primary px-5 rounded-pill fw-bold">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Categories -->
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-md-4 animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="card help-card h-100 p-4 border-0 shadow-sm">
+                        <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                        <h4 class="fw-bold mb-3">Booking Assistance</h4>
+                        <ul class="list-unstyled text-muted small">
+                            <li class="mb-2"><i class="fa-solid fa-chevron-right me-2 x-small"></i> How to schedule a pro</li>
+                            <li class="mb-2"><i class="fa-solid fa-chevron-right me-2 x-small"></i> Rescheduling appointments</li>
+                            <li><i class="fa-solid fa-chevron-right me-2 x-small"></i> Cancellation & refunds</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="card help-card h-100 p-4 border-0 shadow-sm">
+                        <div class="icon-box"><i class="fa-solid fa-credit-card"></i></div>
+                        <h4 class="fw-bold mb-3">Payments & Fees</h4>
+                        <ul class="list-unstyled text-muted small">
+                            <li class="mb-2"><i class="fa-solid fa-chevron-right me-2 x-small"></i> Service pricing basics</li>
+                            <li class="mb-2"><i class="fa-solid fa-chevron-right me-2 x-small"></i> Secure payment platform</li>
+                            <li><i class="fa-solid fa-chevron-right me-2 x-small"></i> Managing your wallet</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-fade-in" style="animation-delay: 0.5s;">
+                    <div class="card help-card h-100 p-4 border-0 shadow-sm">
+                        <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h4 class="fw-bold mb-3">Safety & Verification</h4>
+                        <ul class="list-unstyled text-muted small">
+                            <li class="mb-2"><i class="fa-solid fa-chevron-right me-2 x-small"></i> Professional background checks</li>
+                            <li class="mb-2"><i class="fa-solid fa-chevron-right me-2 x-small"></i> Rating & Review guidelines</li>
+                            <li><i class="fa-solid fa-chevron-right me-2 x-small"></i> Report a security concern</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5 bg-white">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h2 class="fw-800 display-6 mb-4">Frequently Asked Questions</h2>
+                    <p class="text-muted">Can't find what you're looking for? Reach out to our 24/7 dedicated support team.</p>
+                    <a href="mailto:support@locallink.pro" class="btn btn-outline-primary px-4 py-2 rounded-pill mt-3 fw-bold">Contact Support</a>
+                </div>
+                <div class="col-lg-6">
+                    <div class="accordion accordion-flush" id="faqAccordion">
+                        <div class="accordion-item border-bottom py-3">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-bold text-dark bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#f1">
+                                    How does the Virtual Queue work?
+                                </button>
+                            </h2>
+                            <div id="f1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted small">
+                                    When you book a service, the system automatically assigns you a digital token. You can track your position in line in real-time on your dashboard, so you don't have to wait physically.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item border-bottom py-3">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-bold text-dark bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#f2">
+                                    Are service providers verified?
+                                </button>
+                            </h2>
+                            <div id="f2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted small">
+                                    Yes! Every professional on LocalLink goes through a strict identity verification and business licensing check before they can offer services on the hub.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container text-center">
+             <p class="text-white-50 mb-0">&copy; 2024 LocalLink Professional. Empowering Neighborhood Talent.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Professionals | LocalLink Pro</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">LocalLink</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link active" href="/views/search.html">Explore Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/views/categories.html">Categories</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-3 guest-only">
+                    <a href="/views/login.html" class="nav-link fw-semibold">Login</a>
+                    <a href="/views/signup.html" class="btn btn-primary px-4">Join Now</a>
+                </div>
+                <div class="d-flex align-items-center gap-3 auth-only d-none">
+                    <a href="#" class="nav-link fw-semibold user-dash-link">Dashboard</a>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fa-regular fa-user me-1"></i> <span id="user-name-display">Account</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item user-dash-link" href="#"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header / Search -->
+    <div class="hero-sm bg-white border-bottom mb-5">
+        <div class="container py-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-1 border-0 bg-transparent text-dark">Discover Local Experts</h2>
+                    <p class="text-muted small mb-0">Browse through thousands of verified neighborhood professionals</p>
+                </div>
+                <div class="col-lg-6 mt-3 mt-lg-0">
+                    <div class="input-group search-bar shadow-sm">
+                        <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                        <input type="text" id="search-input" class="form-control border-start-0 ps-0" placeholder="Plumber, Electrician Or Any Expert...">
+                        <button class="btn btn-primary px-4 fw-bold" id="search-btn">Search Professionals</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-2">
+        <div class="row g-4">
+            <!-- Sidebar Filters -->
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-4" style="position: sticky; top: 100px;">
+                    <h6 class="fw-bold text-uppercase mb-3 letter-spacing-1 small">Filter By Category</h6>
+                    <div id="category-filter-list" class="list-group list-group-flush gap-1">
+                        <!-- Categories dynamically loaded -->
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-12 py-3 mb-1 rounded bg-light"></span>
+                            <span class="placeholder col-12 py-3 mb-1 rounded bg-light"></span>
+                            <span class="placeholder col-12 py-3 mb-1 rounded bg-light"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="col-md-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 id="results-count" class="fw-bold fs-6 mb-0 text-muted">Searching local services...</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle border-0" type="button" data-bs-toggle="dropdown">Sort: Recommended</button>
+                    </div>
+                </div>
+                <div class="row g-4" id="results-grid">
+                    <!-- Providers result dynamically loaded -->
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h3 class="fw-bold mb-4 text-primary">LocalLink</h3>
+                    <p class="text-white-50">Simplifying neighborhood commerce through professional technology. Empowering local talent since 2024.</p>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5 class="fw-bold mb-4">Platform</h5>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="#" class="text-reset text-decoration-none hover-white">Discovery</a></li>
+                        <li class="mb-2"><a href="/views/categories.html" class="text-reset text-decoration-none hover-white">Categories</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5 class="fw-bold mb-4">Support</h5>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="/views/help-center.html" class="text-reset text-decoration-none hover-white">Help Center</a></li>
+                        <li class="mb-2"><a href="/views/trust-safety.html" class="text-reset text-decoration-none hover-white">Trust & Safety</a></li>
+                        <li class="mb-2"><a href="/views/terms.html" class="text-reset text-decoration-none hover-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h5 class="fw-bold mb-4">Market Presence</h5>
+                    <div class="d-flex gap-3 fs-5">
+                        <a href="#" class="text-white-50 hover-primary"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="text-white-50 hover-primary"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="text-white-50 hover-primary"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-5 border-secondary opacity-25">
+            <div class="text-center text-white-50 small">
+                &copy; 2024 LocalLink Hub. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             updateAuthUI();
+             const urlParams = new URLSearchParams(window.location.search);
+             const initialCategory = urlParams.get('category');
+             
+             loadCategories();
+             if (initialCategory) {
+                 if (typeof fetchProvidersByCategory === 'function') {
+                    fetchProvidersByCategory(initialCategory);
+                 }
+             } else {
+                 if (typeof fetchAllProviders === 'function') {
+                    fetchAllProviders();
+                 }
+             }
+        });
+
+        async function loadCategories() {
+            try {
+                const res = await fetch('/api/services/categories');
+                const categories = await res.json();
+                const list = document.getElementById('category-filter-list');
+                list.innerHTML = categories.map(cat => `
+                    <button class="list-group-item list-group-item-action border-0 py-2 rounded mb-1 small fw-medium" 
+                            onclick="fetchProvidersByCategory(${cat.id})">
+                        <i class="fa-solid fa-chevron-right me-2 opacity-50 small"></i> ${cat.name}
+                    </button>
+                `).join('') + `
+                    <button class="list-group-item list-group-item-action border-0 py-2 rounded mb-1 small fw-bold text-primary" 
+                            onclick="fetchAllProviders()">
+                        <i class="fa-solid fa-list me-2"></i> All Categories
+                    </button>
+                `;
+            } catch (err) {
+                console.error('Error loading categories:', err);
+            }
+        }
+    </script>
+</body>
+</html>

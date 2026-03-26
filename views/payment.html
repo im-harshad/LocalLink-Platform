@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | LocalLink Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body { background: #f1f5f9; }
+        .checkout-card { background: white; border-radius: 20px; border: none; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .method-card { border: 2px solid #e2e8f0; border-radius: 14px; padding: 16px 20px; cursor: pointer; transition: all 0.2s; user-select: none; }
+        .method-card:hover { border-color: var(--primary); background: #eff6ff; }
+        .method-card.selected { border-color: var(--primary); background: #eff6ff; }
+        .method-card .method-radio { display: none; }
+        .step-indicator { display: flex; gap: 8px; margin-bottom: 32px; }
+        .step { flex: 1; height: 4px; border-radius: 4px; background: #e2e8f0; transition: background 0.3s; }
+        .step.active { background: var(--primary); }
+        .step.done { background: #10b981; }
+        .card-input-wrapper { position: relative; }
+        .card-input-wrapper .card-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; color: #94a3b8; transition: color 0.2s; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+        .order-item { background: #f8fafc; border-radius: 12px; padding: 14px 16px; }
+        .loyalty-discount-badge { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white; border-radius: 10px; padding: 4px 12px; font-size: 0.78rem; font-weight: 700; }
+        .secure-badge { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px; }
+        .trust-logo { opacity: 0.4; filter: grayscale(1); height: 20px; }
+        .pay-btn { background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; border-radius: 14px; padding: 16px; font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; transition: all 0.3s; }
+        .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.35); }
+        .pay-btn:disabled { background: #94a3b8; transform: none; box-shadow: none; cursor: not-allowed; }
+        .processing-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.75); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
+        .processing-overlay.show { display: flex; }
+        .processing-spinner { width: 64px; height: 64px; }
+        .upi-apps { display: flex; gap: 12px; flex-wrap: wrap; }
+        .upi-app-btn { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 8px 14px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; background: white; }
+        .upi-app-btn:hover { border-color: var(--primary); background: #eff6ff; }
+        .points-slider { accent-color: var(--primary); }
+        .section-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .section-tab { padding: 8px 0; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: #64748b; transition: all 0.2s; }
+    </style>
+</head>
+<body>
+    <!-- Nav -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">LocalLink</a>
+            <div class="d-flex align-items-center gap-3 auth-only d-none">
+                <a href="#" class="nav-link fw-semibold user-dash-link">My Dashboard</a>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fa-regular fa-user me-1"></i> <span id="user-name-display">Account</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                        <li><a class="dropdown-item user-dash-link" href="#"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" id="processing-overlay">
+        <div class="text-center text-white">
+            <div class="processing-spinner mx-auto mb-4">
+                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.2)" stroke-width="6"/>
+                    <circle cx="32" cy="32" r="28" stroke="white" stroke-width="6" stroke-linecap="round" stroke-dasharray="44 132" style="animation: spin 1s linear infinite; transform-origin: center;"/>
+                </svg>
+            </div>
+            <h4 class="fw-bold mb-2">Processing Payment</h4>
+            <p class="opacity-75 mb-0" id="overlay-message">Connecting to payment gateway...</p>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .processing-spinner circle:last-child { animation: spin 1.2s linear infinite; transform-origin: 32px 32px; }
+    </style>
+
+    <div class="container py-5" style="max-width: 980px;">
+        <div class="row g-4">
+            <!-- Left: Payment Form -->
+            <div class="col-lg-7">
+                <div class="checkout-card p-4 p-md-5">
+                    <div class="mb-4">
+                        <div class="step-indicator" id="step-indicator">
+                            <div class="step active" id="step-1"></div>
+                            <div class="step" id="step-2"></div>
+                            <div class="step" id="step-3"></div>
+                        </div>
+                        <h2 class="fw-800 mb-1">Secure Checkout</h2>
+                        <p class="text-muted small mb-0">Your payment is protected by 256-bit SSL encryption</p>
+                    </div>
+
+                    <!-- Step 1: Choose Method -->
+                    <div id="step-section-1">
+                        <h6 class="fw-bold text-muted text-uppercase small letter-spacing-1 mb-3">Choose Payment Method</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <label class="method-card selected" id="method-card" onclick="selectMethod('card', this)">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fa-solid fa-credit-card fa-lg text-primary"></i>
+                                        <div>
+                                            <div class="fw-bold small">Credit / Debit</div>
+                                            <div class="text-muted" style="font-size:0.72rem;">Visa, MasterCard, RuPay</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="method-card" id="method-upi" onclick="selectMethod('upi', this)">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fa-solid fa-qrcode fa-lg text-success"></i>
+                                        <div>
+                                            <div class="fw-bold small">UPI</div>
+                                            <div class="text-muted" style="font-size:0.72rem;">GPay, PhonePe, Paytm</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="method-card" id="method-netbanking" onclick="selectMethod('netbanking', this)">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fa-solid fa-building-columns fa-lg text-warning"></i>
+                                        <div>
+                                            <div class="fw-bold small">Net Banking</div>
+                                            <div class="text-muted" style="font-size:0.72rem;">All major banks</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="method-card" id="method-wallet" onclick="selectMethod('wallet', this)">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fa-solid fa-wallet fa-lg text-danger"></i>
+                                        <div>
+                                            <div class="fw-bold small">Wallet</div>
+                                            <div class="text-muted" style="font-size:0.72rem;">Paytm, Amazon Pay</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Card form -->
+                        <div id="card-form">
+                            <h6 class="fw-bold text-muted text-uppercase small letter-spacing-1 mb-3">Card Details</h6>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">Card Number</label>
+                                <div class="card-input-wrapper">
+                                    <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)">
+                                    <span class="card-icon" id="card-brand-icon"><i class="fa-regular fa-credit-card"></i></span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-bold small">Expiry Date</label>
+                                    <input type="text" class="form-control" id="card-expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-bold small">CVV</label>
+                                    <input type="password" class="form-control" id="card-cvv" placeholder="•••" maxlength="4">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small">Cardholder Name</label>
+                                <input type="text" class="form-control" id="card-name" placeholder="As printed on card">
+                            </div>
+                        </div>
+
+                        <!-- UPI form -->
+                        <div id="upi-form" style="display:none;">
+                            <h6 class="fw-bold text-muted text-uppercase small letter-spacing-1 mb-3">UPI Options</h6>
+                            <div class="upi-apps mb-3">
+                                <button class="upi-app-btn" onclick="setUpiApp('gpay@okicici')">
+                                    <span style="font-size:1.2rem;">🟢</span> GPay
+                                </button>
+                                <button class="upi-app-btn" onclick="setUpiApp('phonepe@ybl')">
+                                    <span style="font-size:1.2rem;">🟣</span> PhonePe
+                                </button>
+                                <button class="upi-app-btn" onclick="setUpiApp('paytm@paytm')">
+                                    <span style="font-size:1.2rem;">🔵</span> Paytm
+                                </button>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small">UPI ID</label>
+                                <input type="text" class="form-control" id="upi-id" placeholder="e.g., john@okicici">
+                            </div>
+                        </div>
+
+                        <!-- Netbanking form -->
+                        <div id="netbanking-form" style="display:none;">
+                            <h6 class="fw-bold text-muted text-uppercase small letter-spacing-1 mb-3">Select Bank</h6>
+                            <select class="form-select mb-4" id="bank-select">
+                                <option value="" disabled selected>Choose your bank...</option>
+                                <option value="SBI">State Bank of India</option>
+                                <option value="HDFC">HDFC Bank</option>
+                                <option value="ICICI">ICICI Bank</option>
+                                <option value="AXIS">Axis Bank</option>
+                                <option value="KOTAK">Kotak Mahindra Bank</option>
+                                <option value="YES">Yes Bank</option>
+                                <option value="PNB">Punjab National Bank</option>
+                            </select>
+                        </div>
+
+                        <!-- Wallet form -->
+                        <div id="wallet-form" style="display:none;">
+                            <h6 class="fw-bold text-muted text-uppercase small letter-spacing-1 mb-3">Select Wallet</h6>
+                            <div class="upi-apps mb-4">
+                                <button class="upi-app-btn" onclick="setWallet('paytm')">🔵 Paytm</button>
+                                <button class="upi-app-btn" onclick="setWallet('amazon')">🟠 Amazon Pay</button>
+                                <button class="upi-app-btn" onclick="setWallet('mobikwik')">🔴 MobiKwik</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loyalty points section -->
+                    <div class="mb-4" id="loyalty-section" style="display:none;">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="fw-bold small">Use Loyalty Points</span>
+                            <span class="loyalty-discount-badge">
+                                <i class="fa-solid fa-star me-1"></i> <span id="available-points-badge">0</span> pts
+                            </span>
+                        </div>
+                        <div class="order-item">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small text-muted">Redeem points (100 pts = ₹10)</span>
+                                <span class="fw-bold small text-primary" id="points-discount-display">₹0 off</span>
+                            </div>
+                            <input type="range" class="form-range points-slider w-100" id="points-slider" min="0" step="100" value="0" oninput="updatePointsDiscount(this.value)">
+                            <div class="d-flex justify-content-between small text-muted mt-1">
+                                <span>0 pts</span>
+                                <span id="max-points-label">0 pts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pay button -->
+                    <button class="btn btn-primary pay-btn w-100" id="pay-btn" onclick="initiatePayment()">
+                        <i class="fa-solid fa-lock me-2"></i> 
+                        Pay <span id="pay-amount-btn">₹0</span> Securely
+                    </button>
+
+                    <div class="secure-badge mt-3 d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-success"></i>
+                        <span class="small text-muted">Protected by 256-bit SSL encryption. We never store your card details.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div class="col-lg-5">
+                <div class="checkout-card p-4 mb-4" id="order-summary-card">
+                    <h5 class="fw-bold mb-4">Order Summary</h5>
+
+                    <div class="order-item mb-3" id="service-summary-box">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="category-icon m-0" style="width:44px;height:44px;font-size:1rem;">
+                                <i class="fa-solid fa-wrench" id="service-icon"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold small" id="summary-service-name">Loading...</div>
+                                <div class="text-muted" style="font-size:0.78rem;" id="summary-provider-name">Provider</div>
+                                <div class="text-muted" style="font-size:0.75rem;" id="summary-booking-date">Date</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2 small">
+                        <span class="text-muted">Service Price</span>
+                        <span class="fw-semibold" id="summary-price">₹0</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2 small" id="loyalty-discount-row" style="display:none !important;">
+                        <span class="text-success"><i class="fa-solid fa-gift me-1"></i>Loyalty Discount</span>
+                        <span class="fw-semibold text-success" id="summary-discount">-₹0</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2 small">
+                        <span class="text-muted">Platform Fee</span>
+                        <span class="text-success">FREE</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center fw-bold">
+                        <span>Total Payable</span>
+                        <span class="text-primary fs-5" id="summary-total">₹0</span>
+                    </div>
+
+                    <hr>
+                    <div class="d-flex align-items-center gap-2 small text-muted">
+                        <i class="fa-solid fa-coins text-warning"></i>
+                        You'll earn <strong class="text-dark mx-1" id="points-to-earn">0</strong> loyalty points with this payment!
+                    </div>
+                </div>
+
+                <!-- What is LocalLink Pay -->
+                <div class="checkout-card p-4">
+                    <h6 class="fw-bold mb-3"><i class="fa-solid fa-circle-info text-primary me-2"></i>Why Pay on LocalLink?</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2 d-flex align-items-center gap-2 small text-muted">
+                            <i class="fa-solid fa-shield-halved text-success"></i> Secure, encrypted transactions
+                        </li>
+                        <li class="mb-2 d-flex align-items-center gap-2 small text-muted">
+                            <i class="fa-solid fa-star text-warning"></i> Earn loyalty points on every payment
+                        </li>
+                        <li class="mb-2 d-flex align-items-center gap-2 small text-muted">
+                            <i class="fa-solid fa-rotate-left text-primary"></i> Instant refund on cancellation
+                        </li>
+                        <li class="d-flex align-items-center gap-2 small text-muted">
+                            <i class="fa-solid fa-headset text-info"></i> 24/7 payment support
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/notifications.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const bookingId = params.get('booking_id');
+        const servicePrice = parseFloat(params.get('price') || 0);
+        const serviceName = decodeURIComponent(params.get('service') || 'Service');
+        const providerName = decodeURIComponent(params.get('provider') || 'Provider');
+        const bookingDate = decodeURIComponent(params.get('date') || '');
+
+        let selectedMethod = 'card';
+        let loyaltyPoints = 0;
+        let availablePoints = 0;
+        let discountAmount = 0;
+        let selectedWallet = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadPageData();
+        });
+
+        function loadPageData() {
+            // Populate order summary
+            document.getElementById('summary-service-name').textContent = serviceName;
+            document.getElementById('summary-provider-name').textContent = `By ${providerName}`;
+            document.getElementById('summary-booking-date').textContent = bookingDate ? new Date(bookingDate).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : '';
+            document.getElementById('summary-price').textContent = `₹${servicePrice}`;
+            document.getElementById('summary-total').textContent = `₹${servicePrice}`;
+            document.getElementById('pay-amount-btn').textContent = `₹${servicePrice}`;
+            document.getElementById('points-to-earn').textContent = Math.floor(servicePrice / 10);
+
+            // Load loyalty points
+            loadLoyaltyPoints();
+        }
+
+        async function loadLoyaltyPoints() {
+            const token = sessionStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/loyalty/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (data.success && data.loyalty.total_points > 0) {
+                    availablePoints = data.loyalty.total_points;
+                    const maxUsable = Math.min(availablePoints, Math.floor(servicePrice * 10));
+                    document.getElementById('available-points-badge').textContent = availablePoints;
+                    document.getElementById('points-slider').max = maxUsable;
+                    document.getElementById('max-points-label').textContent = `${maxUsable} pts`;
+                    document.getElementById('loyalty-section').style.display = 'block';
+                }
+            } catch (e) {}
+        }
+
+        function updatePointsDiscount(pts) {
+            loyaltyPoints = parseInt(pts);
+            discountAmount = Math.floor(loyaltyPoints / 10);
+            const finalAmount = Math.max(0, servicePrice - discountAmount);
+
+            document.getElementById('points-discount-display').textContent = `₹${discountAmount} off`;
+            document.getElementById('summary-discount').textContent = `-₹${discountAmount}`;
+            document.getElementById('summary-total').textContent = `₹${finalAmount}`;
+            document.getElementById('pay-amount-btn').textContent = `₹${finalAmount}`;
+
+            const loyaltyRow = document.getElementById('loyalty-discount-row');
+            loyaltyRow.style.display = loyaltyPoints > 0 ? 'flex' : 'none';
+        }
+
+        function selectMethod(method, el) {
+            selectedMethod = method;
+            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+
+            // Show/hide form sections
+            document.getElementById('card-form').style.display = method === 'card' ? 'block' : 'none';
+            document.getElementById('upi-form').style.display = method === 'upi' ? 'block' : 'none';
+            document.getElementById('netbanking-form').style.display = method === 'netbanking' ? 'block' : 'none';
+            document.getElementById('wallet-form').style.display = method === 'wallet' ? 'block' : 'none';
+        }
+
+        function setUpiApp(id) { document.getElementById('upi-id').value = id; }
+        function setWallet(w) { selectedWallet = w; document.querySelectorAll('.upi-app-btn').forEach(b => b.style.borderColor = ''); event.target.closest('.upi-app-btn').style.borderColor = 'var(--primary)'; }
+
+        function formatCardNumber(input) {
+            let v = input.value.replace(/\D/g, '').substring(0, 16);
+            input.value = v.replace(/(.{4})/g, '$1 ').trim();
+            // Detect card brand
+            const icon = document.getElementById('card-brand-icon');
+            const firstDigit = v[0];
+            if (firstDigit === '4') icon.innerHTML = '<i class="fa-brands fa-cc-visa text-primary"></i>';
+            else if (firstDigit === '5') icon.innerHTML = '<i class="fa-brands fa-cc-mastercard text-danger"></i>';
+            else icon.innerHTML = '<i class="fa-regular fa-credit-card"></i>';
+        }
+
+        function formatExpiry(input) {
+            let v = input.value.replace(/\D/g, '').substring(0, 4);
+            if (v.length >= 2) v = v.substring(0, 2) + ' / ' + v.substring(2);
+            input.value = v;
+        }
+
+        async function initiatePayment() {
+            if (!bookingId) {
+                Swal.fire('Error', 'Invalid booking. Please go back and try again.', 'error');
+                return;
+            }
+
+            const token = sessionStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/views/login.html';
+                return;
+            }
+
+            // Validate inputs
+            if (selectedMethod === 'card') {
+                const cardNum = document.getElementById('card-number').value.replace(/\s/g, '');
+                const expiry = document.getElementById('card-expiry').value;
+                const cvv = document.getElementById('card-cvv').value;
+                const name = document.getElementById('card-name').value;
+                if (cardNum.length < 16) return Swal.fire('Validation', 'Please enter a valid 16-digit card number', 'warning');
+                if (!expiry || expiry.length < 7) return Swal.fire('Validation', 'Please enter a valid expiry date', 'warning');
+                if (!cvv || cvv.length < 3) return Swal.fire('Validation', 'Please enter a valid CVV', 'warning');
+                if (!name.trim()) return Swal.fire('Validation', 'Please enter cardholder name', 'warning');
+            }
+            if (selectedMethod === 'upi' && !document.getElementById('upi-id').value.includes('@')) {
+                return Swal.fire('Validation', 'Please enter a valid UPI ID (e.g., name@bank)', 'warning');
+            }
+            if (selectedMethod === 'netbanking' && !document.getElementById('bank-select').value) {
+                return Swal.fire('Validation', 'Please select your bank', 'warning');
+            }
+
+            showProcessingOverlay('Connecting to payment gateway...');
+
+            try {
+                const payload = {
+                    booking_id: parseInt(bookingId),
+                    payment_method: selectedMethod,
+                };
+                if (selectedMethod === 'card') {
+                    payload.card_number = document.getElementById('card-number').value.replace(/\s/g, '');
+                    payload.card_expiry = document.getElementById('card-expiry').value;
+                    payload.card_cvv = document.getElementById('card-cvv').value;
+                }
+                if (selectedMethod === 'upi') payload.upi_id = document.getElementById('upi-id').value;
+
+                const initRes = await fetch('/api/payments/initiate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(payload)
+                });
+                const initData = await initRes.json();
+
+                if (!initData.success) {
+                    hideProcessingOverlay();
+                    return Swal.fire('Payment Failed', initData.message, 'error');
+                }
+
+                updateOverlayMessage('Authenticating your payment...');
+                await sleep(1200);
+                updateOverlayMessage('Verifying with bank...');
+                await sleep(1000);
+                updateOverlayMessage('Confirming transaction...');
+                await sleep(800);
+
+                const confirmRes = await fetch('/api/payments/confirm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ payment_id: initData.payment_id, transaction_id: initData.transaction_id })
+                });
+                const confirmData = await confirmRes.json();
+
+                hideProcessingOverlay();
+
+                if (confirmData.success) {
+                    // Update step indicators
+                    document.getElementById('step-1').className = 'step done';
+                    document.getElementById('step-2').className = 'step done';
+                    document.getElementById('step-3').className = 'step active';
+
+                    const finalAmount = Math.max(0, servicePrice - discountAmount);
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '🎉 Payment Successful!',
+                        html: `
+                            <div class="text-center">
+                                <p class="text-muted mb-3">₹${finalAmount} paid to <strong>${providerName}</strong></p>
+                                <div class="d-flex justify-content-center gap-3 mb-3">
+                                    <div class="p-3 rounded-3" style="background:#f0fdf4;">
+                                        <div class="fw-bold text-success">+${confirmData.points_earned}</div>
+                                        <div class="small text-muted">Points Earned</div>
+                                    </div>
+                                    <div class="p-3 rounded-3" style="background:#eff6ff;">
+                                        <div class="fw-bold text-primary" style="font-size:0.75rem;">${initData.transaction_id}</div>
+                                        <div class="small text-muted">Txn ID</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `,
+                        confirmButtonText: 'Go to Dashboard',
+                        confirmButtonColor: '#2563eb'
+                    });
+                    window.location.href = '/views/customer-dashboard.html';
+                } else {
+                    Swal.fire('Payment Failed', confirmData.message || 'Transaction could not be completed.', 'error');
+                }
+
+            } catch (err) {
+                hideProcessingOverlay();
+                console.error('Payment error:', err);
+                Swal.fire('System Error', 'Network error. Please try again.', 'error');
+            }
+        }
+
+        function showProcessingOverlay(msg) {
+            document.getElementById('overlay-message').textContent = msg;
+            document.getElementById('processing-overlay').classList.add('show');
+            document.getElementById('pay-btn').disabled = true;
+        }
+        function hideProcessingOverlay() {
+            document.getElementById('processing-overlay').classList.remove('show');
+            document.getElementById('pay-btn').disabled = false;
+        }
+        function updateOverlayMessage(msg) {
+            document.getElementById('overlay-message').textContent = msg;
+        }
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    </script>
+</body>
+</html>
